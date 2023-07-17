@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-33u!6d$1aaj!cyt*(23c0g4t*qxtkyox@a)_x+b$@&35vvl*tv
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+APPEND_SLASH = False
 ALLOWED_HOSTS = []
 
 
@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_management'
+    'user_management',
+    'user_account'
 ]
 
 MIDDLEWARE = [
@@ -126,7 +127,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -134,10 +135,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [
-    "static"
+    BASE_DIR / "static",
 ]
 
 AUTHENTICATION_BACKENDS = [
     'user_management.backends.XamppAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+LOGIN_URL = 'index/'
