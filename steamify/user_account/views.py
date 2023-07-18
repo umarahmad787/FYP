@@ -8,8 +8,8 @@ def index(request):
     return render(request, 'index.html')
 
 
-def account(request):
-    return render(request, 'account.html')
+def payment(request):
+    return render(request, 'payment.html')
 
 #@login_required(login_url='/usermanagement/index')
 def settings(request):
@@ -27,6 +27,8 @@ def settings(request):
 
 def videoPage(request):
     return render(request, 'videoPage.html')
+
+
 
 def subscriptions(request):
     email = request.session.get('email')
