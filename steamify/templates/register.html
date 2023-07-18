@@ -32,6 +32,13 @@
                         <p>It is a long established fact that a reader <br> will be distracted by the readable.</p>
                      </div>
                      <form action="/usermanagement/check" method="post">
+                        {% if messages %}
+                           <ul class="messages text-danger">
+                              {% for message in messages %}
+                                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                              {% endfor %}
+                           </ul>
+                           {% endif %}
                         {% csrf_token %}
                         <div class="form-group">
                            <label>User Name</label>

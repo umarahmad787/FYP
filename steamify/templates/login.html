@@ -41,6 +41,13 @@
                         <div class="form-group">
                            <label>Password</label>
                            <input type="password" class="form-control" placeholder="Password" id="password" name="password">
+                           {% if messages %}
+                           <ul class="messages text-danger">
+                              {% for message in messages %}
+                                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                              {% endfor %}
+                           </ul>
+                           {% endif %}
                         </div>
                         <div class="mt-4">
                            <div class="row">

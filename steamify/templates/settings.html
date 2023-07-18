@@ -85,7 +85,7 @@
             <li class="nav-item dropdown no-arrow osahan-right-navbar-user">
                <a class="nav-link dropdown-toggle user-dropdown-link" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                <img alt="Avatar" src="{% static 'images/user.png'%}">
-               Osahan 
+               {{ username }} 
                </a>
                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                   <a class="dropdown-item" href="{% url 'subscriptions'%}"><i class="fas fa-fw fa-video"></i> &nbsp; Subscriptions</a>
@@ -102,11 +102,11 @@
                   <div class="row">
                      <div class="col-lg-12">
                         <div class="main-title text-center">
-                           <h3>Change Password</h3>
+                           <h1>Change Password</h1>
                         </div>
                      </div>
                   </div>
-                  <form>
+                  <form class="text-primary">
                      <div class="row d-flex justify-content-center align-items-center">
                         <div class="col-sm-12 d-flex justify-content-center">
                            <div class="form-group">
@@ -181,7 +181,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="/usermanagement/index">Logout</a>
+            <a class="btn btn-primary" href="/usermanagement/logout">Logout</a>
          </div>
       </div>
    </div>

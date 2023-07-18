@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 #import mysql.connector as sql
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.db import connection as conn
 from django.contrib import messages
 uname=''
@@ -8,9 +8,13 @@ email=''
 password=''
 
 # Create your views here.
-def login(request):
+def login_view(request):
+    logout(request)
     return render(request, 'login.html')
 
+def logout_view(request):
+    logout(request)  # Ends the user's session
+    return redirect('/usermanagement/login')
 
 def signup_page(request):
     return render(request, 'register.html')
@@ -51,21 +55,23 @@ def auth_view(request):
         c = "SELECT * from user_management_logininfo WHERE email='{}' AND password='{}'".format(email, password)
         cursor.execute(c)
         authenticated=tuple(cursor.fetchall())
-
-        # Perform authentication logic and check credentials
-        # ...
-
         if authenticated:  # Replace with your authentication logic
             # Save user session
             request.session['authenticated'] = True
             request.session['email'] = email
 
-            return render(request, 'index.html')
+            #username from sql and render with page
+            cursor.execute("SELECT username FROM user_management_logininfo WHERE email=%s", [email])
+            username = cursor.fetchone()[0]
+
+            return render(request, 'index.html', {'username': username})
         else:
-            messages.error(request, 'Authentication failed')
+            logout(request)
+            messages.error(request, 'Invalid Email or Password')
             return render(request, 'login.html')
     else:
         # Handle GET request for login page
+        logout(request)
         return render(request, 'login.html')
     
     
@@ -74,10 +80,6 @@ def check_view(request):
     if request.method == 'POST':
         if 'signup' in request.POST:
             global uname,email,password
-            if not uname or not email or not password:
-                msg='Please provide all the required information.'
-                messages.error(request, 'Please provide all the required information.')
-                return render(request, 'register.html')
             cursor = conn.cursor()
             d = request.POST
             for key,value in d.items():
@@ -87,6 +89,15 @@ def check_view(request):
                     email=value
                 if key=="password":
                     password=value
+            if not uname or not email or not password:
+                msg = 'Please provide all the required information.'
+                messages.error(request, msg)
+                return render(request, 'register.html')
+            cursor.execute("SELECT * FROM user_management_logininfo WHERE email=%s", [email])
+            existing_user = cursor.fetchone()
+            if existing_user:
+                messages.error(request, 'Email is already registered.')
+                return render(request, 'register.html')
             c = "INSERT INTO user_management_logininfo (username, email, password) Values('{}','{}','{}') ".format(uname, email, password)
             cursor.execute(c)
             conn.commit()
