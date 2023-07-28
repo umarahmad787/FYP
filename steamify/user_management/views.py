@@ -3,67 +3,46 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import logout
 from django.db import connection as conn
 from django.contrib import messages
-uname=''
+
+
+firstname=''
+lastname=''
+username=''
 email=''
 password=''
+gender=''
 
 # Create your views here.
 def login_view(request):
     logout(request)
     return render(request, 'login.html')
 
+
+
 def logout_view(request):
     logout(request)  # Ends the user's session
     return redirect('/usermanagement/login')
 
+
+
 def signup_page(request):
     return render(request, 'register.html')
 
-
-# def auth_view(request):
-#     #if request.method == "POST":
-#     global email,password
-#     if request.method == "POST":
-#         cursor = conn.cursor()
-#         d = request.POST
-#         print(d)
-#         for key,value in d.items():
-#             if key=="email":
-#                 email=value
-#             if key=="password":
-#                 password=value
-#         c = "SELECT * from user_management_logininfo WHERE email='{}' AND password='{}'".format(email, password)
-#         cursor.execute(c)
-#         t=tuple(cursor.fetchone())
-#         if t==():
-#             return(HttpResponse('auth error'))
-#         else:
-#             return render(request,'index.html')
-#     elif 'index-page' in request:
-#         # Handle create account action
-#         return render(request, 'index.html')  # Redirect to signup page 
-#     else:
-#         return render(request, 'login.html')
 
 
 def auth_view(request):
     if request.method == "POST":
         # Perform login authentication
         cursor = conn.cursor()
-        email = request.POST.get('email')
+        username = request.POST.get('username')
         password = request.POST.get('password')
-        c = "SELECT * from user_management_logininfo WHERE email='{}' AND password='{}'".format(email, password)
-        cursor.execute(c)
+        query = "SELECT * from user_management_logininfo WHERE username='{}' AND password='{}'".format(username, password)
+        cursor.execute(query)
         authenticated=tuple(cursor.fetchall())
         if authenticated:  # Replace with your authentication logic
             # Save user session
             request.session['authenticated'] = True
-            request.session['email'] = email
-
-            #username from sql and render with page
-            cursor.execute("SELECT username FROM user_management_logininfo WHERE email=%s", [email])
-            username = cursor.fetchone()[0]
-
+            request.session['username'] = username
             return render(request, 'index.html', {'username': username})
         else:
             logout(request)
@@ -79,27 +58,29 @@ def auth_view(request):
 def check_view(request):
     if request.method == 'POST':
         if 'signup' in request.POST:
-            global uname,email,password
-            cursor = conn.cursor()
-            d = request.POST
-            for key,value in d.items():
-                if key=="uname":
-                    uname=value
-                if key=="email":
-                    email=value
-                if key=="password":
-                    password=value
-            if not uname or not email or not password:
+            global username,email,password   
+            firstname = request.POST.get('firstname')
+            lastname = request.POST.get('lastname')       
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            email = request.POST.get('email')
+            gender = request.POST.get('gender')
+            if not username or not email or not password or not firstname or not lastname or not gender:
                 msg = 'Please provide all the required information.'
                 messages.error(request, msg)
                 return render(request, 'register.html')
-            cursor.execute("SELECT * FROM user_management_logininfo WHERE email=%s", [email])
+            cursor = conn.cursor() 
+            cursor.execute("SELECT * FROM user_management_logininfo WHERE username=%s OR email=%s", [username, email])
             existing_user = cursor.fetchone()
             if existing_user:
-                messages.error(request, 'Email is already registered.')
+                if existing_user[0] == username:
+                    messages.error(request, 'Username is already taken.')
+                if existing_user[1] == email:
+                    messages.error(request, 'Email is already registered.')
                 return render(request, 'register.html')
-            c = "INSERT INTO user_management_logininfo (username, email, password) Values('{}','{}','{}') ".format(uname, email, password)
-            cursor.execute(c)
+            c = "INSERT INTO user_management_logininfo (username, email, password, firstname, gender, lastname) VALUES (%s, %s, %s, %s, %s, %s)"
+            values = (username, email, password, firstname, gender, lastname)
+            cursor.execute(c, values)
             conn.commit()
             return render(request, 'login.html')  # Redirect to index success page
         elif 'login_page' in request.POST:

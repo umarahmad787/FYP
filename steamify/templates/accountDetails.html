@@ -89,7 +89,7 @@
                </a>
                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                   <a class="dropdown-item" href="{% url 'accountDetails'%}"><i class="fas fa-fw fa-user"></i> &nbsp; Account Details</a>
-                  <a class="dropdown-item" href="{% url 'subscriptions'%}"><i class="fas fa-fw fa-video"></i> &nbsp; Subscriptions</a>
+                  <a class="dropdown-item" href="{% url 'subscriptions'%}"><i class="fas fa-fw fa-video"></i> &nbsp; Subscribe Now</a>
                   <a class="dropdown-item" href="{% url 'settings'%}"><i class="fas fa-fw fa-cog"></i> &nbsp; Change Password</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a>
@@ -103,46 +103,55 @@
                   <div class="row">
                      <div class="col-lg-12">
                         <div class="main-title text-center">
-                           <h1>Change Password</h1>
+                           <h1>My Personal Information</h1>
                         </div>
-                        {% if messages %}
-                              <ul class="messages text-center text-primary">
-                                 {% for message in messages %}
-                                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                                 {% endfor %}
-                              </ul>
-                           {% endif %}
                      </div>
                   </div>
-                  <form action="/useraccount/changePassword/" method="post" class="text-primary">
-                     {% csrf_token %}
-                     <div class="row d-flex justify-content-center align-items-center">
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">Current Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control border-form-control" value="" placeholder="Old Password" name="currentPassword" type="password">
+                     <div id="content-wrapper">
+                        <div class="container-fluid pb-0">
+                           <div class="container-fluid upload-details" style="font-size: 20px; padding: 20px;">
+                              <div class="row">
+                                    <div class="col-lg-12">
+                                       <div class="main-title text-center">
+                                          <!-- <h1>My Account Information</h1> -->
+                                       </div>
+                                    </div>
+                              </div>
+                              <table class="table table-bordered text-dark">
+                                    <tr>
+                                       <th>Username</th>
+                                       <td>{{ context.Uname }}</td>
+                                    </tr>
+                                    <tr>
+                                       <th>Email</th>
+                                       <td>{{ context.userEmail }}</td>
+                                    </tr>
+                                    <tr>
+                                       <th>First Name</th>
+                                       <td>{{ context.userFname }}</td>
+                                    </tr>
+                                    <tr>
+                                       <th>Last Name</th>
+                                       <td>{{ context.userLname }}</td>
+                                    </tr>
+                                    <tr>
+                                       <th>Subscription Status</th>
+                                       <td class="text-primary">
+                                          {% if context.subscription_status %}
+                                                Active
+                                          {% else %}
+                                                Not Active
+                                          {% endif %}
+                                       </td>
+                                    </tr>
+                              </table>
+                                 <div class="text-right">
+                                    <a href="{% url 'subscriptionDetails' %}" class="btn btn-primary">Subscription Details</a>
+                                    <a href="{% url 'index' %}" class="btn btn-secondary">Back to Home</a>
+                              </div>
                            </div>
                         </div>
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">New Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control border-form-control" value="" placeholder="New Password" name="newPassword" type="password">
-                           </div>
-                        </div>
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">Confirm Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control  border-form-control" value="" placeholder="Confirm Password" type="password">
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-sm-12 text-center">
-                           <a href="{%url 'index'%}"><button type="button" class="btn btn-outline-secondary mr-2">Cancel</button></a>
-                           <button type="submit" class="btn btn-success border-none">Save Changes</button>
-                        </div>
-                     </div>
-                  </form>
+                  </div>
                </div>   
             </div>
          </div>

@@ -44,7 +44,7 @@
    <body id="page-top" >
       <nav class="navbar navbar-expand navbar-light bg-white static-top osahan-nav sticky-top">
          &nbsp;&nbsp; 
-         <a class="navbar-brand mr-1" href="{%url 'index'%}"><img class="img-fluid" alt="" src="{% static 'images/logo.png'%}"></a>
+         <a class="navbar-brand mr-1" href="{% url 'index' %}"><img class="img-fluid" alt="" src="{% static 'images/logo.png'%}"></a>
          <!-- Navbar Search -->
          <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-5 my-2 my-md-0 osahan-navbar-search">
             <div class="input-group">
@@ -89,7 +89,7 @@
                </a>
                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                   <a class="dropdown-item" href="{% url 'accountDetails'%}"><i class="fas fa-fw fa-user"></i> &nbsp; Account Details</a>
-                  <a class="dropdown-item" href="{% url 'subscriptions'%}"><i class="fas fa-fw fa-video"></i> &nbsp; Subscriptions</a>
+                  <a class="dropdown-item" href="{% url 'subscriptions'%}"><i class="fas fa-fw fa-video"></i> &nbsp; Subscribe Now</a>
                   <a class="dropdown-item" href="{% url 'settings'%}"><i class="fas fa-fw fa-cog"></i> &nbsp; Change Password</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a>
@@ -97,55 +97,64 @@
             </li>
          </ul>
       </nav>
-         <div id="content-wrapper">
-            <div class="container-fluid pb-0">
-               <div class="container-fluid upload-details" style="font-size: 20px; padding: 20px;">
-                  <div class="row">
-                     <div class="col-lg-12">
+      <div id="content-wrapper">
+         <div class="container-fluid pb-0">
+            <div class="container-fluid upload-details" style="font-size: 20px; padding: 20px;">
+               <div class="row">
+                  <div class="col-lg-12">
                         <div class="main-title text-center">
-                           <h1>Change Password</h1>
-                        </div>
-                        {% if messages %}
+                           <h1 class="text-center text-dark">Subscription Details</h1>
+                           {% if messages %}
                               <ul class="messages text-center text-primary">
                                  {% for message in messages %}
                                     <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
                                  {% endfor %}
                               </ul>
                            {% endif %}
-                     </div>
+                        </div>
                   </div>
-                  <form action="/useraccount/changePassword/" method="post" class="text-primary">
-                     {% csrf_token %}
-                     <div class="row d-flex justify-content-center align-items-center">
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">Current Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control border-form-control" value="" placeholder="Old Password" name="currentPassword" type="password">
-                           </div>
-                        </div>
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">New Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control border-form-control" value="" placeholder="New Password" name="newPassword" type="password">
-                           </div>
-                        </div>
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">Confirm Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control  border-form-control" value="" placeholder="Confirm Password" type="password">
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-sm-12 text-center">
-                           <a href="{%url 'index'%}"><button type="button" class="btn btn-outline-secondary mr-2">Cancel</button></a>
-                           <button type="submit" class="btn btn-success border-none">Save Changes</button>
-                        </div>
-                     </div>
-                  </form>
-               </div>   
-            </div>
-         </div>
+               </div>
+   
+               <!-- Subscription Details Table -->
+               <div class="row justify-content-center mt-5">
+                  <div class="col-lg-8">
+                        <table class="table table-bordered">
+                           <thead>
+                              <tr>
+                                    <th>Subscription Status</th>
+                                    <th>Subscription Date</th>
+                                    <th>Expiry Date</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr class="text-primary">
+                                    <td>{% if context.subscription_status %} Active {% else %} Not Active {% endif %}</td>
+                                    <td>{% if context.subsciptionDate %} {{ context.subsciptionDate }} {% else %} N/A {% endif %}</td>
+                                    <td>{% if context.subscriptionExpirydate %} {{ context.subscriptionExpirydate }} {% else %} N/A {% endif %}</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                  </div>
+               </div>
+   
+               <!-- Cancel Subscription Button -->
+               <div class="row justify-content-center mt-4">
+                  <div class="col-lg-6">
+                     <!-- <a class="dropdown-item" href="{% url 'cancelSubscription' %}" data-toggle="modal" data-target="#logoutModal"><i class="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a> -->
+                     <a href="#" data-toggle="modal" data-target="#cancel_subscription_Modal" class="btn btn-danger btn-block">Cancel Subscription</a>
+                  </div>
+               </div>
+
+               <!-- Back to Home Button -->
+               <div class="row justify-content-center mt-4">
+                  <div class="col-lg-6">
+                        <a href="{% url 'index' %}" class="btn btn-primary btn-block">Back to Home</a>
+                  </div>
+               </div>
+   
+            </div>   
+      </div>
+   </div>
 
       <!-- /.container-fluid -->
       <!-- Sticky Footer -->
@@ -196,6 +205,29 @@
       </div>
    </div>
 </div>
+
+
+<div class="modal fade" id="cancel_subscription_Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Cancel Confirm?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+            </div>
+            <div class="modal-body">Select "Yes" below if you are ready to end your Subscription.</div>
+            <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
+            <a class="btn btn-primary" href="{% url 'cancelSubscription' %}">Yes</a>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+
 <!-- Bootstrap core JavaScript-->
 <script src="/static/vendor/jquery/jquery.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

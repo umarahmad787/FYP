@@ -7,10 +7,12 @@ from django.db import models
 
 
 class loginInfo(models.Model):
-    id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
+    username = models.CharField(primary_key=True, max_length=100)
+    email = models.EmailField(max_length=100)
     password = models.CharField(max_length=100)
+    firstname = models.CharField(max_length=100, default='')
+    lastname = models.CharField(max_length=100, default='')
+    gender = models.CharField(max_length=10, default='')
 
 # class User(AbstractBaseUser, PermissionsMixin):
 #     username = models.CharField(max_length=255, unique=True)

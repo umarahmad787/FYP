@@ -98,52 +98,25 @@
          </ul>
       </nav>
          <div id="content-wrapper">
-            <div class="container-fluid pb-0">
-               <div class="container-fluid upload-details" style="font-size: 20px; padding: 20px;">
+            <div class="container-fluid pb-0 text-center">
+               <div class="container-fluid " style="font-size: 20px; padding: 20px;">
                   <div class="row">
                      <div class="col-lg-12">
                         <div class="main-title text-center">
-                           <h1>Change Password</h1>
+                           <h1>ERROR</h1>
                         </div>
-                        {% if messages %}
+                     </div>
+                  </div>
+                  {% if messages %}
                               <ul class="messages text-center text-primary">
                                  {% for message in messages %}
                                     <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
                                  {% endfor %}
                               </ul>
                            {% endif %}
-                     </div>
-                  </div>
-                  <form action="/useraccount/changePassword/" method="post" class="text-primary">
-                     {% csrf_token %}
-                     <div class="row d-flex justify-content-center align-items-center">
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">Current Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control border-form-control" value="" placeholder="Old Password" name="currentPassword" type="password">
-                           </div>
-                        </div>
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">New Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control border-form-control" value="" placeholder="New Password" name="newPassword" type="password">
-                           </div>
-                        </div>
-                        <div class="col-sm-12 d-flex justify-content-center">
-                           <div class="form-group">
-                              <label class="control-label">Confirm Password <span class="required">*</span></label>
-                              <input style="width: auto !important;" class="form-control  border-form-control" value="" placeholder="Confirm Password" type="password">
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-sm-12 text-center">
-                           <a href="{%url 'index'%}"><button type="button" class="btn btn-outline-secondary mr-2">Cancel</button></a>
-                           <button type="submit" class="btn btn-success border-none">Save Changes</button>
-                        </div>
-                     </div>
-                  </form>
                </div>   
+               <a class="container-fluid text-center" href="{%url 'subscriptions'%}"><button type="button" class="btn btn-outline-secondary mr-2">Subscribe Now</button></a>
+
             </div>
          </div>
 
