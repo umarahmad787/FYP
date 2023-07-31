@@ -43,7 +43,8 @@ def auth_view(request):
             # Save user session
             request.session['authenticated'] = True
             request.session['username'] = username
-            return render(request, 'index.html', {'username': username})
+            return redirect('index')
+            #return render(request, 'index.html', {'username': username})
         else:
             logout(request)
             messages.error(request, 'Invalid Email or Password')

@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db import connection as conn
-from user_account.models import SubscribedUsers 
+from user_account.models import SubscribedUsers, Video
 from user_management.models import loginInfo
 from django.contrib import messages
 from datetime import datetime, timedelta
-
+from .forms import VideoForm
 
 
 # Create your views here.
@@ -212,15 +212,45 @@ def cancelSubscription(request):
 
 
 
-def videoPage(request):
+def videoPage(request, video_id):
     if request.session.get('authenticated') == True:
         username = request.session.get('username')
         try:
             subscribed_user = SubscribedUsers.objects.get(username=username)
-            return render(request, 'videoPage.html',{'username' : username})
+            try:
+                video = Video.objects.get(pk=video_id)
+                
+            except Video.DoesNotExist:
+                # Handle the case when the video_id does not exist
+                messages.error(request, 'Video not found.')
+                return render(request, 'videonotFound.html',{'username' : username})
+            return render(request, 'videoPage.html',{'username' : username, 'video': video})
 
         except SubscribedUsers.DoesNotExist:
             messages.error(request, 'Your are currently not Subscribed.')
             return render(request, 'notSubscribed.html',{'username' : username})
+    else:
+        return redirect('index')
+    
+
+
+def upload_video(request):
+    if request.session.get('authenticated') == True:
+        username = request.session.get('username')
+        if username == 'admin':
+            if request.method == 'POST':
+                form = VideoForm(request.POST, request.FILES)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Video uploaded successfully.')
+                    return render(request, 'upload_video.html',{'form': form, 'username' : username})
+                else:
+                    messages.error(request, 'Error uploading video.')
+            else:
+                form = VideoForm()
+                return render(request, 'upload_video.html', {'form': form, 'username' : username})
+        else:
+            return redirect('index')
+            
     else:
         return redirect('index')
